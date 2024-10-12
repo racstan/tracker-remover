@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Link Cleaner</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        input, button, textarea {
+            padding: 10px;
+            font-size: 16px;
+            width: 100%;
+            box-sizing: border-box;
+            margin-bottom: 10px;
+        }
+        button {
+            cursor: pointer;
+        }
+        #output {
+            margin-top: 20px;
+            font-weight: bold;
+            word-wrap: break-word;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Link Tracker remover</h1>
+<input type="text" id="urlInput" placeholder="Paste your link here">
+<button onclick="cleanURL()">Clean Link</button>
+
+<div id="output"></div>
+
+<script>
+    function cleanURL() {
+        const urlInput = document.getElementById('urlInput').value.trim();
+        let outputDiv = document.getElementById('output');
+
+        try {
+            let url = new URL(urlInput);
+
+            const paramsToRemove = ['si', 'igshid', 'igsh']; 
+            paramsToRemove.forEach(param => url.searchParams.delete(param));
+
+            const cleanedURL = url.origin + url.pathname + (url.searchParams.toString() ? '?' + url.searchParams.toString() : '');
+
+            outputDiv.innerHTML = `
+                <p>Cleaned URL:</p>
+                <textarea id="cleanedUrl" rows="3" readonly>${cleanedURL}</textarea>
+                <button onclick="copyToClipboard()">Copy Cleaned Link</button>
+            `;
+        } catch (error) {
+            outputDiv.innerHTML = '<p style="color:red;">Invalid URL. Please check and try again.</p>';
+        }
+    }
+
+    function copyToClipboard() {
+        const cleanedUrlTextArea = document.getElementById('cleanedUrl');
+        cleanedUrlTextArea.select();
+        document.execCommand('copy');
+
+        alert('Cleaned URL copied to clipboard!');
+    }
+</script>
+
+</body>
+</html>
